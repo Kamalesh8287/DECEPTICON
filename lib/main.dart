@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:k/alerts.dart';
 import 'package:k/onpressedsos.dart';
@@ -16,7 +15,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'MaterialApp',
+      title: 'Hazardous App',
+      theme: ThemeData(
+        primarySwatch: Colors.pink,
+      ),
       home: const HomeScreen(),
     );
   }
@@ -32,7 +34,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLongPressActive = false;
 
-  void _handleLongPressStart() {
+  void _handleLongPressStart(LongPressStartDetails details) {
     _isLongPressActive = true;
 
     Future.delayed(const Duration(milliseconds: 2500), () {
@@ -53,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFF3F4F6), // Light grayish background
       appBar: AppBar(
-        title: const Text('Hazardous Management App'),
+        title: const Text('Hazardous App'),
         centerTitle: true,
         backgroundColor: const Color.fromRGBO(251, 128, 189, 1),
       ),
@@ -65,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 15,
             child: Center(
               child: GestureDetector(
-                onLongPressStart: (_) => _handleLongPressStart(),
+                onLongPressStart: _handleLongPressStart,
                 onLongPressEnd: _handleLongPressEnd,
                 child: Container(
                   width: 260,
@@ -109,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 40,
-                childAspectRatio: 2.2,
+                childAspectRatio: 1.8, // Adjusted for better layout
                 children: [
                   _buildButton('Report', const Report()),
                   _buildButton('Alerts', const Alerts()),
@@ -127,26 +129,18 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildButton(String text, Widget page) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => page),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 5,
       ),
       child: Text(
         text,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 20,
-        ),
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
       ),
     );
   }
