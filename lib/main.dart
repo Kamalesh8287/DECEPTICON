@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:k/alerts.dart';
 import 'package:k/onpressedsos.dart';
-import 'package:k/precautions.dart';
+import 'package:k/precautions1.dart';
 import 'package:k/report.dart';
 import 'package:k/shelters.dart';
 
@@ -141,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildButton('Report', const Report()),
                   _buildButton('Alerts', const Alerts()),
                   _buildButton('Shelters', const Shelters()),
-                  _buildButton('Precaution', const Precautions()),
+                  _buildButton('Precaution', const Precautions1()),
                 ],
               ),
             ),

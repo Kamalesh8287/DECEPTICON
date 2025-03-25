@@ -56,7 +56,7 @@ class _ReportState extends State<Report> {
                 width: 200,
                 child: const Center(
                   child: Text(
-                    'Report',
+                    '"Report"',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 40,

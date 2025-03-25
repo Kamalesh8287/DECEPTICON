@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Precautions extends StatelessWidget {
-  const Precautions({super.key});
+class Precautions2 extends StatelessWidget {
+  const Precautions2({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class Precautions extends StatelessWidget {
         elevation: 2,
       ),
       backgroundColor: Colors.blue.shade50,
-      body: Padding(
+      body: SingleChildScrollView( // <-- Added to make the list scrollable
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -31,6 +31,7 @@ class Precautions extends StatelessWidget {
             _buildButton(context, 'Flood Precautions', 'Flood Precautions Content'),
             _buildButton(context, 'Fire Precautions', 'Fire Precautions Content'),
             _buildButton(context, 'Tsunami Precautions', 'Tsunami Precautions Content'),
+            const SizedBox(height: 20), // Added padding at the bottom
           ],
         ),
       ),
