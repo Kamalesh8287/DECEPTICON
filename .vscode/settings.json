@@ -3,5 +3,6 @@
     "files.autoSaveDelay": 500,
     "dart.flutterGenerateLocalizationsOnSave": "never",
     "dart.flutterHotReloadOnSave": "allIfDirty",
-    "dart.hotReloadOnSave": "allIfDirty"
+    "dart.hotReloadOnSave": "allIfDirty",
+    "cmake.sourceDirectory": "C:/Users/kamal/Downloads/k/linux"
 }

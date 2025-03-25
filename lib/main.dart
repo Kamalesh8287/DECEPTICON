@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:k/alerts.dart';
 import 'package:k/onpressedsos.dart';
@@ -51,11 +50,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF3F4F6), // Light grayish background
+      backgroundColor: const Color(0xFFE3F2FD), // Light blue background
       appBar: AppBar(
-        title: const Text('Hazardous Management App'),
+        title: const Text(
+          'Hazardous Management App',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Colors.white,
+          ),
+        ),
         centerTitle: true,
-        backgroundColor: const Color.fromRGBO(251, 128, 189, 1),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       body: Stack(
         children: [
@@ -68,20 +82,33 @@ class _HomeScreenState extends State<HomeScreen> {
                 onLongPressStart: (_) => _handleLongPressStart(),
                 onLongPressEnd: _handleLongPressEnd,
                 child: Container(
-                  width: 260,
-                  height: 260,
-                  decoration: const BoxDecoration(
+                  width: 200,
+                  height: 250,
+                  decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      colors: [Color(0xFFFF7E5F), Color(0xFFFF758C)],
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFFB71C1C), Color(0xFFD32F2F)], // Red gradient
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.red,
+                        blurRadius: 15,
+                        spreadRadius: 2,
+                      ),
+                    ],
                   ),
-                  child: const CircleAvatar(
-                    radius: 100,
-                    backgroundColor: Colors.transparent,
-                    backgroundImage: AssetImage('assets/sos2.jpg'),
+                  child: const Center(
+                    child: Text(
+                      'SOS',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 60,
+                        fontWeight: FontWeight.w600,
+                        letterSpacing: 2,
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -95,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
               height: 600,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFff7eb3), Color(0xFFff758c)],
+                  colors: [Color(0xFFBBDEFB), Color(0xFFE3F2FD)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -134,8 +161,8 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
+        backgroundColor: const Color(0xFF2196F3),
+        foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(30),
         ),

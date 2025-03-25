@@ -12,24 +12,15 @@ class _ReportState extends State<Report> {
 
   void _navigateToReportPage() {
     if (_selectedReport != null) {
-      if (_selectedReport == 'Missing Report') {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const MissingReportPage(),
-          ),
-        );
-      } else {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ReportDetailPage(reportType: _selectedReport!),
-          ),
-        );
-      }
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ReportDetailPage(reportType: _selectedReport!),
+        ),
+      );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('select a report type')),
+        const SnackBar(content: Text('Please select a report type')),
       );
     }
   }
@@ -39,23 +30,39 @@ class _ReportState extends State<Report> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Report'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF4A90E2),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // CircleAvatar with text
-            CircleAvatar(
-              radius: 100,
-              backgroundColor: Colors.teal.shade400,
-              child: const Text(
-                'Report',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 40,
-                  fontWeight: FontWeight.w600,
+            // Report Button with Shadow
+            GestureDetector(
+              onTap: _navigateToReportPage,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: const Color(0xFF42A5F5),
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3), // Shadow color
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                height: 200,
+                width: 200,
+                child: const Center(
+                  child: Text(
+                    'Report',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 40,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -70,7 +77,7 @@ class _ReportState extends State<Report> {
                   _selectedReport = newValue;
                 });
               },
-              items: ['Missing Report', 'Road Blockages', 'others']
+              items: ['Missing Report', 'Road Blockages', 'Others']
                   .map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
@@ -79,30 +86,12 @@ class _ReportState extends State<Report> {
               }).toList(),
               decoration: InputDecoration(
                 border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 18,
+                  horizontal: 15,
+                  vertical: 15,
                 ),
-              ),
-            ),
-            const SizedBox(height: 20),
-
-            // OK Button
-            ElevatedButton(
-              onPressed: _navigateToReportPage,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-              child: const Text(
-                'OK',
-                style: TextStyle(fontSize: 18),
               ),
             ),
           ],
@@ -119,10 +108,14 @@ class ReportDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (reportType == 'Missing Report') {
+      return const MissingReportForm();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(reportType),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF4A90E2),
       ),
       body: Center(
         child: Text(
@@ -134,14 +127,14 @@ class ReportDetailPage extends StatelessWidget {
   }
 }
 
-class MissingReportPage extends StatefulWidget {
-  const MissingReportPage({super.key});
+class MissingReportForm extends StatefulWidget {
+  const MissingReportForm({super.key});
 
   @override
-  State<MissingReportPage> createState() => _MissingReportPageState();
+  State<MissingReportForm> createState() => _MissingReportFormState();
 }
 
-class _MissingReportPageState extends State<MissingReportPage> {
+class _MissingReportFormState extends State<MissingReportForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
@@ -150,7 +143,6 @@ class _MissingReportPageState extends State<MissingReportPage> {
 
   void _submitReport() {
     if (_formKey.currentState!.validate()) {
-      // Showing a confirmation message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Report has been submitted successfully!'),
@@ -167,7 +159,9 @@ class _MissingReportPageState extends State<MissingReportPage> {
 
       // Return to the previous page after a delay
       Future.delayed(const Duration(seconds: 1), () {
-        Navigator.pop(context);
+        if (mounted) {
+          Navigator.pop(context);
+        }
       });
     }
   }
@@ -177,89 +171,87 @@ class _MissingReportPageState extends State<MissingReportPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Missing Report'),
-        backgroundColor: Colors.teal,
+        backgroundColor: const Color(0xFF4A90E2),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
-          child: ListView(
-            children: [
-              // Name Field
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Name Field
+                TextFormField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    labelText: 'Name',
+                    border: OutlineInputBorder(),
                   ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter a name' : null,
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter a name' : null,
-              ),
-              const SizedBox(height: 15),
+                const SizedBox(height: 16),
 
-              // Age Field
-              TextFormField(
-                controller: _ageController,
-                decoration: InputDecoration(
-                  labelText: 'Age',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                // Age Field
+                TextFormField(
+                  controller: _ageController,
+                  decoration: const InputDecoration(
+                    labelText: 'Age',
+                    border: OutlineInputBorder(),
                   ),
+                  keyboardType: TextInputType.number,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter age' : null,
                 ),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter an age' : null,
-              ),
-              const SizedBox(height: 15),
+                const SizedBox(height: 16),
 
-              // Last Seen Location Field
-              TextFormField(
-                controller: _locationController,
-                decoration: InputDecoration(
-                  labelText: 'Last Seen Location',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                // Location Field
+                TextFormField(
+                  controller: _locationController,
+                  decoration: const InputDecoration(
+                    labelText: 'Last Seen Location',
+                    border: OutlineInputBorder(),
                   ),
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter location' : null,
                 ),
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter last seen location' : null,
-              ),
-              const SizedBox(height: 15),
+                const SizedBox(height: 16),
 
-              // Description Field
-              TextFormField(
-                controller: _descriptionController,
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                // Description Field
+                TextFormField(
+                  controller: _descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'Description',
+                    border: OutlineInputBorder(),
                   ),
+                  maxLines: 3,
+                  validator: (value) =>
+                      value!.isEmpty ? 'Please enter description' : null,
                 ),
-                maxLines: 4,
-                validator: (value) =>
-                    value!.isEmpty ? 'Please enter a description' : null,
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 24),
 
-              // Submit Button
-              ElevatedButton(
-                onPressed: _submitReport,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                // Submit Button with Shadow
+                ElevatedButton(
+                  onPressed: _submitReport,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF42A5F5),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    shadowColor: Color.fromRGBO(0, 0, 0, 0.3),
+                    elevation: 10, // Increased elevation for better shadow
+                  ),
+                  child: const Text(
+                    'Submit Report',
+                    style: TextStyle(fontSize: 18),
                   ),
                 ),
-                child: const Text(
-                  'Report',
-                  style: TextStyle(fontSize: 18),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
