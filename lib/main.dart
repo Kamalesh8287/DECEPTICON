@@ -31,14 +31,14 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   bool _isLongPressActive = false;
 
-  void _handleLongPressStart() {
+  void _handleLongPressStart(LongPressStartDetails details) {
     _isLongPressActive = true;
 
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (_isLongPressActive && mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => const Sos()),
-        );
+        Navigator.of(
+          context,
+        ).push(MaterialPageRoute(builder: (context) => const Sos()));
       }
     });
   }
@@ -79,7 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
             right: 15,
             child: Center(
               child: GestureDetector(
-                onLongPressStart: (_) => _handleLongPressStart(),
+                onLongPressStart: _handleLongPressStart,
                 onLongPressEnd: _handleLongPressEnd,
                 child: Container(
                   width: 200,
@@ -154,18 +154,13 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildButton(String text, Widget page) {
     return ElevatedButton(
       onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => page),
-        );
+        Navigator.push(context, MaterialPageRoute(builder: (context) => page));
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
         backgroundColor: const Color(0xFF2196F3),
         foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(30),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 5,
       ),
       child: Text(
