@@ -34,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleLongPressStart() {
     _isLongPressActive = true;
 
-    Future.delayed(const Duration(milliseconds: 2500), () {
+    Future.delayed(const Duration(milliseconds: 1500), () {
       if (_isLongPressActive && mounted) {
         Navigator.of(context).push(
           MaterialPageRoute(builder: (context) => const Sos()),
@@ -94,8 +94,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     boxShadow: [
                       BoxShadow(
                         color: Colors.red,
-                        blurRadius: 15,
-                        spreadRadius: 2,
+                        blurRadius: 25,
+                        spreadRadius: 8,
                       ),
                     ],
                   ),

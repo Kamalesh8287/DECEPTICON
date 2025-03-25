@@ -10,19 +10,13 @@ class Report extends StatefulWidget {
 class _ReportState extends State<Report> {
   String? _selectedReport;
 
-  void _navigateToReportPage() {
-    if (_selectedReport != null) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ReportDetailPage(reportType: _selectedReport!),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please select a report type')),
-      );
-    }
+  void _navigateToReportPage(String reportType) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ReportDetailPage(reportType: reportType),
+      ),
+    );
   }
 
   @override
@@ -37,45 +31,39 @@ class _ReportState extends State<Report> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Report Button with Shadow
-            GestureDetector(
-              onTap: _navigateToReportPage,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFF42A5F5),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3), // Shadow color
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                height: 200,
-                width: 200,
-                child: const Center(
-                  child: Text(
-                    '"Report"',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40,
-                      fontWeight: FontWeight.w600,
-                    ),
+            // New widget with "Report Here" text
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF42A5F5),
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
                   ),
+                ],
+              ),
+              child: const Text(
+                'Report Here',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),
             const SizedBox(height: 30),
 
-            // DropdownButton
+            // DropdownButton - Triggers navigation on item selection
             DropdownButtonFormField<String>(
               value: _selectedReport,
               hint: const Text('Select Report Type'),
               onChanged: (String? newValue) {
-                setState(() {
-                  _selectedReport = newValue;
-                });
+                if (newValue != null) {
+                  _navigateToReportPage(newValue);
+                }
               },
               items: ['Missing Report', 'Road Blockages', 'Others']
                   .map<DropdownMenuItem<String>>((String value) {
@@ -229,10 +217,17 @@ class _MissingReportFormState extends State<MissingReportForm> {
                   validator: (value) =>
                       value!.isEmpty ? 'Please enter description' : null,
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 88),
 
                 // Submit Button with Shadow
-                ElevatedButton(
+                Positioned( 
+                  top: 600,
+                  left: 40,
+                  right: 40,
+                   child:Center(
+                child: 
+                ElevatedButton( 
+                  
                   onPressed: _submitReport,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF42A5F5),
@@ -240,16 +235,17 @@ class _MissingReportFormState extends State<MissingReportForm> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 40, vertical: 15),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(27),
                     ),
-                    shadowColor: Color.fromRGBO(0, 0, 0, 0.3),
+                    shadowColor: Colors.black.withOpacity(0.3),
                     elevation: 10, // Increased elevation for better shadow
                   ),
                   child: const Text(
                     'Submit Report',
                     style: TextStyle(fontSize: 18),
                   ),
-                ),
+                 ),
+                ),),
               ],
             ),
           ),
