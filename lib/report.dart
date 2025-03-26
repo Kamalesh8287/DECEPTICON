@@ -24,7 +24,7 @@ class _ReportState extends State<Report> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Report'),
-        backgroundColor: const Color(0xFF4A90E2),
+        backgroundColor: const Color.fromARGB(255, 248, 107, 92),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),

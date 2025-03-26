@@ -50,7 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFE3F2FD), // Light blue background
+      backgroundColor: const Color.fromARGB(255, 254, 230, 228), // Light coral background
       appBar: AppBar(
         title: const Text(
           'Hazardous Management App',
@@ -64,7 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFF4A90E2), Color(0xFF357ABD)],
+              colors: [Color(0xFFF2637E), Color(0xFFF23D3D)], // Pinkish-red to red gradient
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -73,56 +73,74 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Stack(
         children: [
+          // SOS Button with Hold Message
           Positioned(
-            top: 100,
+            top: 60,
             left: 15,
             right: 15,
             child: Center(
-              child: GestureDetector(
-                onLongPressStart: _handleLongPressStart,
-                onLongPressEnd: _handleLongPressEnd,
-                child: Container(
-                  width: 200,
-                  height: 250,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFB71C1C), Color(0xFFD32F2F)], // Red gradient
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.red,
-                        blurRadius: 25,
-                        spreadRadius: 8,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  GestureDetector(
+                    onLongPressStart: _handleLongPressStart,
+                    onLongPressEnd: _handleLongPressEnd,
+                    child: Container(
+                      width: 200,
+                      height: 250,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFFF3B3B), Color(0xFFD32F2F)], // Brighter red to dark red gradient
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Color(0xFFD32F2F), // Slightly brighter red shadow
+                            blurRadius: 25,
+                            spreadRadius: 8,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'SOS',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 60,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 2,
+                      child: const Center(
+                        child: Text(
+                          'SOS',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 60,
+                            fontWeight: FontWeight.w600,
+                            letterSpacing: 2,
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                  const SizedBox(height: 30),
+                  const Text(
+                    'In case of Emergency...\nHold this for 1.5 secs',
+                    style: TextStyle(
+                      color: Color(0xFFD32F2F), // Brighter red text
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
           ),
+
+          // Bottom Container with Buttons
           Positioned(
-            top: 420,
+            top: 430,
             left: 0,
             right: 0,
             child: Container(
               height: 600,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFBBDEFB), Color(0xFFE3F2FD)],
+                  colors: [Color.fromARGB(255, 248, 213, 164), Color(0xFFFFEBEE)], // Light coral to soft pink gradient
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -158,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       style: ElevatedButton.styleFrom(
         padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        backgroundColor: const Color(0xFF2196F3),
+        backgroundColor: const Color.fromARGB(255, 248, 113, 56), // Softer, deeper orange
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 5,
