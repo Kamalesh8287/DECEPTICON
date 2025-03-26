@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'MaterialApp',
+      debugShowCheckedModeBanner: false,
       home: const HomeScreen(),
     );
   }
@@ -50,7 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 254, 230, 228), // Light coral background
+      backgroundColor: const Color.fromARGB(255, 254, 230, 228),
       appBar: AppBar(
         title: const Text(
           'Hazardous Management App',
@@ -64,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Color(0xFFF2637E), Color(0xFFF23D3D)], // Pinkish-red to red gradient
+              colors: [Color(0xFFF2637E), Color(0xFFF23D3D)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -87,17 +88,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     onLongPressEnd: _handleLongPressEnd,
                     child: Container(
                       width: 200,
-                      height: 250,
+                      height: 200,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: const LinearGradient(
-                          colors: [Color(0xFFFF3B3B), Color(0xFFD32F2F)], // Brighter red to dark red gradient
+                          colors: [Color(0xFFFF3B3B), Color(0xFFD32F2F)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Color(0xFFD32F2F), // Slightly brighter red shadow
+                            color: Color(0xFFD32F2F),
                             blurRadius: 25,
                             spreadRadius: 8,
                           ),
@@ -118,9 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 30),
                   const Text(
-                    'In case of Emergency...\nHold this for 1.5 secs',
+                    'In case of Emergency...\nHold this button',
                     style: TextStyle(
-                      color: Color(0xFFD32F2F), // Brighter red text
+                      color: Color(0xFFD32F2F),
                       fontSize: 22,
                       fontWeight: FontWeight.w600,
                     ),
@@ -133,14 +134,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
           // Bottom Container with Buttons
           Positioned(
-            top: 430,
+            top: 400,
             left: 0,
             right: 0,
             child: Container(
               height: 600,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color.fromARGB(255, 248, 213, 164), Color(0xFFFFEBEE)], // Light coral to soft pink gradient
+                  colors: [Color(0xFFF95343), Color(0xFFF5BF90)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -149,18 +150,36 @@ class _HomeScreenState extends State<HomeScreen> {
                   topRight: Radius.circular(40),
                 ),
               ),
-              child: GridView.count(
-                padding: const EdgeInsets.all(33),
-                crossAxisCount: 2,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 40,
-                childAspectRatio: 2.2,
-                children: [
-                  _buildButton('Report', const Report()),
-                  _buildButton('Alerts', const Alerts()),
-                  _buildButton('Shelters', const Shelters()),
-                  _buildButton('Precaution', const Precautions1()),
-                ],
+              child: SingleChildScrollView(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 500,
+                  ), // Adjust height as needed
+                  child: GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: const EdgeInsets.all(33),
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 40,
+                    childAspectRatio:
+                        2.3, // Increased ratio to prevent overflow
+                    children: [
+                      _buildButton('Report', Icons.report, const Report()),
+                      _buildButton(
+                        'Alerts',
+                        Icons.notification_important,
+                        const Alerts(),
+                      ),
+                      _buildButton('Shelters', Icons.map, const Shelters()),
+                      _buildButton(
+                        'Precaution',
+                        Icons.warning,
+                        const Precautions1(),
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -169,23 +188,33 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildButton(String text, Widget page) {
+  Widget _buildButton(String text, IconData icon, Widget page) {
     return ElevatedButton(
       onPressed: () {
         Navigator.push(context, MaterialPageRoute(builder: (context) => page));
       },
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
-        backgroundColor: const Color.fromARGB(255, 248, 113, 56), // Softer, deeper orange
-        foregroundColor: Colors.white,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 16,
+        ), // Adjusted padding
+        backgroundColor: const Color.fromARGB(255, 244, 235, 237),
+        foregroundColor: const Color.fromARGB(255, 45, 44, 44),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         elevation: 5,
       ),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.w600,
-          fontSize: 20,
+      child: FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 24),
+            const SizedBox(width: 8),
+            Text(
+              text,
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
+            ),
+          ],
         ),
       ),
     );

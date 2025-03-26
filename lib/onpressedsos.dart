@@ -10,7 +10,9 @@ class Sos extends StatelessWidget {
       appBar: AppBar(
         title: const Text(
           'Request Reached',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: 
+          TextStyle(fontWeight: FontWeight.bold ,
+          color: Colors.white),
         ),
         backgroundColor: Colors.red.shade600,
         centerTitle: true,

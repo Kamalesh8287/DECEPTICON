@@ -47,3 +47,9 @@
 	<true/>
 </dict>
 </plist>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>Your app needs permission to access the photo library.</string>
+<key>NSCameraUsageDescription</key>
+<string>Your app needs permission to access the camera.</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>Your app needs permission to access the microphone.</string>

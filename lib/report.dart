@@ -22,41 +22,26 @@ class _ReportState extends State<Report> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color.fromARGB(255, 242, 250, 249),
       appBar: AppBar(
         title: const Text('Report'),
-        backgroundColor: const Color.fromARGB(255, 248, 107, 92),
+        backgroundColor: const Color.fromARGB(255, 216, 114, 114),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // New widget with "Report Here" text
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF42A5F5),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Text(
-                'Report Here',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            const Text(
+              '"REPORT HERE "',
+              style: TextStyle(
+                fontSize: 39,
+                fontWeight: FontWeight.w900,
+                color: Color.fromARGB(255, 197, 89, 89),
+                letterSpacing: 1.2,
               ),
             ),
             const SizedBox(height: 30),
-
-            // DropdownButton - Triggers navigation on item selection
             DropdownButtonFormField<String>(
               value: _selectedReport,
               hint: const Text('Select Report Type'),
@@ -98,12 +83,16 @@ class ReportDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (reportType == 'Missing Report') {
       return const MissingReportForm();
+    } else if (reportType == 'Road Blockages') {
+      return const RoadBlockageForm();
+    } else if (reportType == 'Others') {
+      return const OtherIssuesForm();
     }
 
     return Scaffold(
       appBar: AppBar(
         title: Text(reportType),
-        backgroundColor: const Color(0xFF4A90E2),
+        backgroundColor: const Color.fromARGB(255, 248, 113, 56),
       ),
       body: Center(
         child: Text(
@@ -122,6 +111,20 @@ class MissingReportForm extends StatefulWidget {
   State<MissingReportForm> createState() => _MissingReportFormState();
 }
 
+class RoadBlockageForm extends StatefulWidget {
+  const RoadBlockageForm({super.key});
+
+  @override
+  State<RoadBlockageForm> createState() => _RoadBlockageFormState();
+}
+
+class OtherIssuesForm extends StatefulWidget {
+  const OtherIssuesForm({super.key});
+
+  @override
+  State<OtherIssuesForm> createState() => _OtherIssuesFormState();
+}
+
 class _MissingReportFormState extends State<MissingReportForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
@@ -134,118 +137,176 @@ class _MissingReportFormState extends State<MissingReportForm> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Report has been submitted successfully!'),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.black,
           duration: Duration(seconds: 2),
         ),
       );
 
-      // Clear the form after submission
       _nameController.clear();
       _ageController.clear();
       _locationController.clear();
       _descriptionController.clear();
 
-      // Return to the previous page after a delay
       Future.delayed(const Duration(seconds: 1), () {
-        if (mounted) {
-          Navigator.pop(context);
-        }
+        if (mounted) Navigator.pop(context);
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    return ReportFormTemplate(
+      formKey: _formKey,
+      controllers: {
+        'Name': _nameController,
+        'Age': _ageController,
+        'Last Seen Location': _locationController,
+        'Description like clothes,height,body features': _descriptionController,
+      },
+      onSubmit: _submitReport,
+    );
+  }
+}
+
+class _RoadBlockageFormState extends State<RoadBlockageForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _severityController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  void _submitReport() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Report has been submitted successfully!'),
+          backgroundColor: Colors.black,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      _locationController.clear();
+      _severityController.clear();
+      _descriptionController.clear();
+
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) Navigator.pop(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ReportFormTemplate(
+      formKey: _formKey,
+      controllers: {
+        'Location': _locationController,
+        'Severity': _severityController,
+        'Description': _descriptionController,
+      },
+      onSubmit: _submitReport,
+    );
+  }
+}
+
+class _OtherIssuesFormState extends State<OtherIssuesForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _issueTypeController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  void _submitReport() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Report has been submitted successfully!'),
+          backgroundColor: Colors.black,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      _issueTypeController.clear();
+      _descriptionController.clear();
+
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) Navigator.pop(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ReportFormTemplate(
+      formKey: _formKey,
+      controllers: {
+        'Issue Type': _issueTypeController,
+        'Description': _descriptionController,
+      },
+      onSubmit: _submitReport,
+    );
+  }
+}
+
+class ReportFormTemplate extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final Map<String, TextEditingController> controllers;
+  final VoidCallback onSubmit;
+
+  const ReportFormTemplate({
+    super.key,
+    required this.formKey,
+    required this.controllers,
+    required this.onSubmit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Missing Report'),
-        backgroundColor: const Color(0xFF4A90E2),
+        title: const Text('Report'),
+        backgroundColor: const Color.fromARGB(255, 248, 107, 92),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Name Field
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter a name' : null,
-                ),
-                const SizedBox(height: 16),
-
-                // Age Field
-                TextFormField(
-                  controller: _ageController,
-                  decoration: const InputDecoration(
-                    labelText: 'Age',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter age' : null,
-                ),
-                const SizedBox(height: 16),
-
-                // Location Field
-                TextFormField(
-                  controller: _locationController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Seen Location',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter location' : null,
-                ),
-                const SizedBox(height: 16),
-
-                // Description Field
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 3,
-                  validator: (value) =>
-                      value!.isEmpty ? 'Please enter description' : null,
-                ),
-                const SizedBox(height: 88),
-
-                // Submit Button with Shadow
-                Positioned( 
-                  top: 600,
-                  left: 40,
-                  right: 40,
-                   child:Center(
-                child: 
-                ElevatedButton( 
-                  
-                  onPressed: _submitReport,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF42A5F5),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(27),
+                for (var entry in controllers.entries)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: TextFormField(
+                      controller: entry.value,
+                      decoration: InputDecoration(
+                        labelText: entry.key,
+                        border: const OutlineInputBorder(),
+                      ),
+                      validator: (value) =>
+                          value!.isEmpty ? 'Please enter ${entry.key.toLowerCase()}' : null,
                     ),
-                    shadowColor: Colors.black.withOpacity(0.3),
-                    elevation: 10, // Increased elevation for better shadow
                   ),
-                  child: const Text(
-                    'Submit Report',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                 ),
-                ),),
+                const SizedBox(height: 40),
+              ElevatedButton(
+  onPressed: onSubmit,
+  style: ElevatedButton.styleFrom(
+    backgroundColor: const Color(0xFF42A5F5),
+    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+  ),
+  child: const SizedBox(
+    width: double.infinity, // Makes the button expand to full width
+    child: Center(
+      child: Text(
+        'Submit Report',
+        style: TextStyle(
+          fontSize: 18, // Set font size
+          fontWeight: FontWeight.bold, // Make the text bold
+          letterSpacing: 1.5, // Add spacing between letters
+          color: Colors.white, // Ensure text is readable
+        ),
+      ),
+    ),
+  ),
+),
+
               ],
             ),
           ),

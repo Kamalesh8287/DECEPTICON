@@ -16,11 +16,11 @@ class Precautions1 extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.blue.shade700,
+        backgroundColor: const Color.fromARGB(255, 240, 123, 129),
         centerTitle: true,
         elevation: 2,
       ),
-      backgroundColor: Colors.blue.shade50,
+      backgroundColor: const Color.fromARGB(255, 246, 244, 244),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
         child: Column(
@@ -29,7 +29,8 @@ class Precautions1 extends StatelessWidget {
           children: [
             _buildButton(
               context,
-              'First Aid',
+              '  First Aid',
+              Icons.medical_services,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const FirstAidPage()),
@@ -39,6 +40,7 @@ class Precautions1 extends StatelessWidget {
             _buildButton(
               context,
               'Survival Tips',
+              Icons.tips_and_updates,
               () => Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const SurvivalTipsPage()),
@@ -48,9 +50,10 @@ class Precautions1 extends StatelessWidget {
             _buildButton(
               context,
               'Precautions',
+              Icons.shield,
               () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const Precautions2()), // <-- Fixed reference to Precautions2
+                MaterialPageRoute(builder: (context) => const Precautions2()),
               ),
             ),
           ],
@@ -59,11 +62,12 @@ class Precautions1 extends StatelessWidget {
     );
   }
 
-  Widget _buildButton(BuildContext context, String text, VoidCallback onPressed) {
+  Widget _buildButton(
+      BuildContext context, String text, IconData icon, VoidCallback onPressed) {
     return ElevatedButton(
       onPressed: onPressed,
       style: ElevatedButton.styleFrom(
-        backgroundColor: Colors.blue.shade600,
+        backgroundColor: const Color.fromARGB(255, 252, 83, 83),
         foregroundColor: Colors.white,
         padding: const EdgeInsets.symmetric(vertical: 16),
         shape: RoundedRectangleBorder(
@@ -72,9 +76,16 @@ class Precautions1 extends StatelessWidget {
         elevation: 5,
         shadowColor: Colors.black26,
       ),
-      child: Text(
-        text,
-        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, size: 24, color: Colors.white), // Icon added here
+          const SizedBox(width: 12), // Spacing between icon and text
+          Text(
+            text,
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          ),
+        ],
       ),
     );
   }
@@ -125,6 +136,3 @@ class SurvivalTipsPage extends StatelessWidget {
     );
   }
 }
-
-
-
