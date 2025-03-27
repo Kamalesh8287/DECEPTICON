@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// Add the missing import for Firebase initialization
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
 class Report extends StatefulWidget {
   const Report({super.key});
@@ -13,9 +13,6 @@ class _ReportState extends State<Report> {
   String? _selectedReport;
 
   void _navigateToReportPage(String reportType) {
-    setState(() {
-      _selectedReport = reportType;
-    });
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -27,41 +24,26 @@ class _ReportState extends State<Report> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
         title: const Text('Report'),
-        backgroundColor: const Color.fromARGB(255, 248, 107, 92),
+        backgroundColor: const Color(0xFF1976D2),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // "Report Here" Banner
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: const Color(0xFF42A5F5),
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Text(
-                'Report Here',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+            const Text(
+              '"REPORT HERE"',
+              style: TextStyle(
+                fontSize: 39,
+                fontWeight: FontWeight.w900,
+                color: Color(0xFFD32F2F),
+                letterSpacing: 1.2,
               ),
             ),
             const SizedBox(height: 30),
-
-            // Dropdown for Report Type
             DropdownButtonFormField<String>(
               value: _selectedReport,
               hint: const Text('Select Report Type'),
@@ -70,25 +52,19 @@ class _ReportState extends State<Report> {
                   _navigateToReportPage(newValue);
                 }
               },
-              items:
-                  [
-                    'Missing Report',
-                    'Road Blockages',
-                    'Others',
-                  ].map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
+              items: ['Missing Report', 'Road Blockages', 'Others']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
               decoration: InputDecoration(
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 15,
-                ),
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               ),
             ),
           ],
@@ -98,7 +74,6 @@ class _ReportState extends State<Report> {
   }
 }
 
-// Report Detail Page
 class ReportDetailPage extends StatelessWidget {
   final String reportType;
 
@@ -108,24 +83,14 @@ class ReportDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (reportType == 'Missing Report') {
       return const MissingReportForm();
+    } else if (reportType == 'Road Blockages') {
+      return const RoadBlockageForm();
+    } else {
+      return const OtherIssuesForm(); // ✅ Added back Other Issues form
     }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(reportType),
-        backgroundColor: const Color(0xFF4A90E2),
-      ),
-      body: Center(
-        child: Text(
-          'Details of $reportType',
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-      ),
-    );
   }
 }
 
-// Missing Report Form
 class MissingReportForm extends StatefulWidget {
   const MissingReportForm({super.key});
 
@@ -139,134 +104,291 @@ class _MissingReportFormState extends State<MissingReportForm> {
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
+  File? _selectedImage;
 
-  // Submit Report
-  void _submitReport() async {
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() => _selectedImage = File(pickedFile.path));
+    }
+  }
+
+  void _submitReport() {
     if (_formKey.currentState!.validate()) {
-      try {
-        await FirebaseFirestore.instance.collection('reports').add({
-          'name': _nameController.text,
-          'age': _ageController.text,
-          'location': _locationController.text,
-          'description': _descriptionController.text,
-          'timestamp': FieldValue.serverTimestamp(),
-        });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Report has been submitted successfully!'),
+          backgroundColor: Colors.black,
+          duration: Duration(seconds: 2),
+        ),
+      );
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Report submitted successfully!'),
-            backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
-          ),
-        );
+      _nameController.clear();
+      _ageController.clear();
+      _locationController.clear();
+      _descriptionController.clear();
+      _selectedImage = null;
 
-        // Clear form and navigate back
-        _nameController.clear();
-        _ageController.clear();
-        _locationController.clear();
-        _descriptionController.clear();
-
-        if (mounted) {
-          Navigator.pop(context);
-        }
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error submitting report: $e'),
-            backgroundColor: const Color.fromARGB(255, 246, 50, 36),
-          ),
-        );
-      }
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) Navigator.pop(context);
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    return ReportFormTemplate(
+      formKey: _formKey,
+      controllers: {
+        'Name': _nameController,
+        'Age': _ageController,
+        'Last Seen Location': _locationController,
+        'Description like clothes, height, body features':
+            _descriptionController,
+      },
+      selectedImage: _selectedImage,
+      onImagePick: _pickImage,
+      onSubmit: _submitReport,
+    );
+  }
+}
+
+class RoadBlockageForm extends StatefulWidget {
+  const RoadBlockageForm({super.key});
+
+  @override
+  State<RoadBlockageForm> createState() => _RoadBlockageFormState();
+}
+
+class _RoadBlockageFormState extends State<RoadBlockageForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  String? _severity;
+  File? _selectedImage;
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() => _selectedImage = File(pickedFile.path));
+    }
+  }
+
+  void _submitReport() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Report has been submitted successfully!'),
+          backgroundColor: Colors.black,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      _locationController.clear();
+      _descriptionController.clear();
+      _selectedImage = null;
+
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) Navigator.pop(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ReportFormTemplate(
+      formKey: _formKey,
+      controllers: {
+        'Location': _locationController,
+        'Description': _descriptionController,
+      },
+      dropdownValue: _severity,
+      onDropdownChanged: (value) => setState(() => _severity = value),
+      selectedImage: _selectedImage,
+      onImagePick: _pickImage,
+      onSubmit: _submitReport,
+    );
+  }
+}
+
+class OtherIssuesForm extends StatefulWidget {
+  const OtherIssuesForm({super.key});
+
+  @override
+  State<OtherIssuesForm> createState() => _OtherIssuesFormState();
+}
+
+class _OtherIssuesFormState extends State<OtherIssuesForm> {
+  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _descriptionController = TextEditingController();
+  File? _selectedImage;
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() => _selectedImage = File(pickedFile.path));
+    }
+  }
+
+  void _submitReport() {
+    if (_formKey.currentState!.validate()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Report has been submitted successfully!'),
+          backgroundColor: Colors.black,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      _descriptionController.clear();
+      _selectedImage = null;
+
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted) Navigator.pop(context);
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ReportFormTemplate(
+      formKey: _formKey,
+      controllers: {
+        'Description': _descriptionController,
+      },
+      selectedImage: _selectedImage,
+      onImagePick: _pickImage,
+      onSubmit: _submitReport,
+    );
+  }
+}
+
+class ReportFormTemplate extends StatelessWidget {
+  final GlobalKey<FormState> formKey;
+  final Map<String, TextEditingController> controllers;
+  final File? selectedImage;
+  final VoidCallback onImagePick;
+  final VoidCallback onSubmit;
+  final String? dropdownValue;
+  final Function(String?)? onDropdownChanged;
+
+  const ReportFormTemplate({
+    super.key,
+    required this.formKey,
+    required this.controllers,
+    required this.selectedImage,
+    required this.onImagePick,
+    required this.onSubmit,
+    this.dropdownValue,
+    this.onDropdownChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Missing Report'),
-        backgroundColor: const Color(0xFF4A90E2),
+        title: const Text('Report Form'),
+        backgroundColor: const Color(0xFF1976D2),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: SingleChildScrollView(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Name Field
-                TextFormField(
-                  controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Name',
-                    border: OutlineInputBorder(),
+                // Dropdown for Road Blockages severity
+                if (onDropdownChanged != null)
+                  DropdownButtonFormField<String>(
+                    value: dropdownValue,
+                    hint: const Text('Select Severity'),
+                    onChanged: onDropdownChanged,
+                    items: ['Low', 'Medium', 'High']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 15),
+                    ),
                   ),
-                  validator:
-                      (value) => value!.isEmpty ? 'Please enter a name' : null,
-                ),
-                const SizedBox(height: 16),
 
-                // Age Field
-                TextFormField(
-                  controller: _ageController,
-                  decoration: const InputDecoration(
-                    labelText: 'Age',
-                    border: OutlineInputBorder(),
-                  ),
-                  keyboardType: TextInputType.number,
-                  validator:
-                      (value) => value!.isEmpty ? 'Please enter age' : null,
-                ),
-                const SizedBox(height: 16),
+                if (onDropdownChanged != null) const SizedBox(height: 20),
 
-                // Location Field
-                TextFormField(
-                  controller: _locationController,
-                  decoration: const InputDecoration(
-                    labelText: 'Last Seen Location',
-                    border: OutlineInputBorder(),
-                  ),
-                  validator:
-                      (value) =>
-                          value!.isEmpty ? 'Please enter location' : null,
-                ),
-                const SizedBox(height: 16),
+                // Text Fields
+                ...controllers.entries.map((entry) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: TextFormField(
+                      controller: entry.value,
+                      decoration: InputDecoration(
+                        labelText: entry.key,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 15, vertical: 15),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return '${entry.key} is required';
+                        }
+                        return null;
+                      },
+                    ),
+                  );
+                }).toList(),
 
-                // Description Field
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
+                // Image Upload Button
+                ElevatedButton(
+                  onPressed: onImagePick,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1976D2),
+                    minimumSize: const Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  maxLines: 3,
-                  validator:
-                      (value) =>
-                          value!.isEmpty ? 'Please enter description' : null,
+                  child: const Text(
+                    'Upload Image',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
+                  ),
                 ),
-                const SizedBox(height: 40),
+
+                if (selectedImage != null) ...[
+                  const SizedBox(height: 10),
+                  Image.file(
+                    selectedImage!,
+                    height: 150,
+                    width: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ],
+
+                const SizedBox(height: 20),
 
                 // Submit Button
-                Center(
-                  child: ElevatedButton(
-                    onPressed: _submitReport,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF42A5F5),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 15,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(27),
-                      ),
-                      elevation: 10,
+                ElevatedButton(
+                  onPressed: onSubmit,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF1976D2),
+                    minimumSize: const Size(double.infinity, 55), // Increased size
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    child: const Text(
-                      'Submit Report',
-                      style: TextStyle(fontSize: 18),
-                    ),
+                  ),
+                  child: const Text(
+                    'Submit',
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                   ),
                 ),
               ],
