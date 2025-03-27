@@ -173,7 +173,7 @@ class _MissingReportFormState extends State<MissingReportForm> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Error submitting report: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: const Color.fromARGB(255, 246, 50, 36),
           ),
         );
       }
