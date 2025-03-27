@@ -1,11 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:k/alerts.dart';
+import 'package:k/firebase_options.dart';
 import 'package:k/onpressedsos.dart';
 import 'package:k/precautions1.dart';
 import 'package:k/report.dart';
 import 'package:k/shelters.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 

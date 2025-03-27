@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "777042848001",
+    "project_id": "decepticon-111b3",
+    "storage_bucket": "decepticon-111b3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:777042848001:android:51aca495584d9dddcb9300",
+        "android_client_info": {
+          "package_name": "com.example.k"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAOFxk-Cdt3sUncDgB_SNhhlRaoLxKhRfM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
