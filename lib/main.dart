@@ -9,9 +9,7 @@ import 'package:k/shelters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -41,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _handleLongPressStart(LongPressStartDetails details) {
     _isLongPressActive = true;
 
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    Future.delayed(const Duration(milliseconds: 1000), () {
       if (_isLongPressActive && mounted) {
         Navigator.of(
           context,
@@ -80,7 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Stack(
         children: [
-          // SOS Button with Hold Message
           Positioned(
             top: 60,
             left: 15,
@@ -138,7 +135,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          // Bottom Container with Buttons
           Positioned(
             top: 400,
             left: 0,
@@ -158,9 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               child: SingleChildScrollView(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                    maxHeight: 500,
-                  ), // Adjust height as needed
+                  constraints: const BoxConstraints(maxHeight: 500),
                   child: GridView.count(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
@@ -168,8 +162,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     crossAxisCount: 2,
                     crossAxisSpacing: 20,
                     mainAxisSpacing: 40,
-                    childAspectRatio:
-                        2.3, // Increased ratio to prevent overflow
+                    childAspectRatio: 2.3,
                     children: [
                       _buildButton('Report', Icons.report, const Report()),
                       _buildButton(
@@ -200,10 +193,7 @@ class _HomeScreenState extends State<HomeScreen> {
         Navigator.push(context, MaterialPageRoute(builder: (context) => page));
       },
       style: ElevatedButton.styleFrom(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
-        ), // Adjusted padding
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         backgroundColor: const Color.fromARGB(255, 244, 235, 237),
         foregroundColor: const Color.fromARGB(255, 45, 44, 44),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
