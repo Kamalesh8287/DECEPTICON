@@ -346,7 +346,7 @@ class ReportFormTemplate extends StatelessWidget {
                       },
                     ),
                   );
-                }).toList(),
+                }),
 
                 // Image Upload Button
                 ElevatedButton(
