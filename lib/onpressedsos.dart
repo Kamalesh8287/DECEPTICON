@@ -124,7 +124,7 @@ class _SosState extends State<Sos> {
                     elevation: 3,
                   ),
                   child: const Text(
-                    'OK',
+                    'Return to Home Screen',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                 ),
