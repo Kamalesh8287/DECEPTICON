@@ -71,7 +71,7 @@ class _SosState extends State<Sos> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center, // Ensure horizontal alignment
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Circle Avatar
               Container(
@@ -109,7 +109,7 @@ class _SosState extends State<Sos> {
 
               // Action Button
               SizedBox(
-                width: double.infinity, // Make button width consistent
+                width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);

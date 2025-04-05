@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -35,7 +37,7 @@ class _ReportState extends State<Report> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              '"REPORT HERE"',
+              'REPORT HERE',
               style: TextStyle(
                 fontSize: 39,
                 fontWeight: FontWeight.w900,
@@ -46,14 +48,17 @@ class _ReportState extends State<Report> {
             const SizedBox(height: 30),
             DropdownButtonFormField<String>(
               value: _selectedReport,
-              hint: const Text('Select Report Type'),
+              hint: const Text('What would you like to report?'),
               onChanged: (String? newValue) {
                 if (newValue != null) {
                   _navigateToReportPage(newValue);
                 }
               },
-              items: ['Missing Report', 'Road Blockages', 'Others']
-                  .map<DropdownMenuItem<String>>((String value) {
+              items: [
+                'Missing Report',
+                'Transportation disruptions',
+                'Others',
+              ].map<DropdownMenuItem<String>>((String value) {
                 return DropdownMenuItem<String>(
                   value: value,
                   child: Text(value),
@@ -63,8 +68,10 @@ class _ReportState extends State<Report> {
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 15,
+                ),
               ),
             ),
           ],
@@ -83,10 +90,10 @@ class ReportDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     if (reportType == 'Missing Report') {
       return const MissingReportForm();
-    } else if (reportType == 'Road Blockages') {
-      return const RoadBlockageForm();
+    } else if (reportType == 'Transportation disruptions') {
+      return const BlockageForm();
     } else {
-      return const OtherIssuesForm(); // ✅ Added back Other Issues form
+      return const OtherIssuesForm();
     }
   }
 }
@@ -107,32 +114,53 @@ class _MissingReportFormState extends State<MissingReportForm> {
   File? _selectedImage;
 
   Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() => _selectedImage = File(pickedFile.path));
     }
   }
 
-  void _submitReport() {
+  void _submitReport() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Report has been submitted successfully!'),
-          backgroundColor: Colors.black,
-          duration: Duration(seconds: 2),
-        ),
-      );
+      try {
+        String? imageUrl;
 
-      _nameController.clear();
-      _ageController.clear();
-      _locationController.clear();
-      _descriptionController.clear();
-      _selectedImage = null;
+        if (_selectedImage != null) {
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('missing_reports/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-      Future.delayed(const Duration(seconds: 1), () {
+          final uploadTask = await storageRef.putFile(_selectedImage!);
+          imageUrl = await uploadTask.ref.getDownloadURL();
+        }
+
+        final reportData = {
+          'name': _nameController.text,
+          'age': _ageController.text,
+          'last_seen_location': _locationController.text,
+          'description': _descriptionController.text,
+          'image_url': imageUrl,
+          'timestamp': FieldValue.serverTimestamp(),
+        };
+
+        await FirebaseFirestore.instance.collection('missing_reports').add(reportData);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Missing report submitted successfully!')),
+        );
+
+        _nameController.clear();
+        _ageController.clear();
+        _locationController.clear();
+        _descriptionController.clear();
+        setState(() => _selectedImage = null);
+
         if (mounted) Navigator.pop(context);
-      });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -144,8 +172,7 @@ class _MissingReportFormState extends State<MissingReportForm> {
         'Name': _nameController,
         'Age': _ageController,
         'Last Seen Location': _locationController,
-        'Description like clothes, height, body features':
-            _descriptionController,
+        'Description of Missing Person': _descriptionController,
       },
       selectedImage: _selectedImage,
       onImagePick: _pickImage,
@@ -154,14 +181,14 @@ class _MissingReportFormState extends State<MissingReportForm> {
   }
 }
 
-class RoadBlockageForm extends StatefulWidget {
-  const RoadBlockageForm({super.key});
+class BlockageForm extends StatefulWidget {
+  const BlockageForm({super.key});
 
   @override
-  State<RoadBlockageForm> createState() => _RoadBlockageFormState();
+  State<BlockageForm> createState() => _RoadBlockageFormState();
 }
 
-class _RoadBlockageFormState extends State<RoadBlockageForm> {
+class _RoadBlockageFormState extends State<BlockageForm> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -169,30 +196,53 @@ class _RoadBlockageFormState extends State<RoadBlockageForm> {
   File? _selectedImage;
 
   Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() => _selectedImage = File(pickedFile.path));
     }
   }
 
-  void _submitReport() {
+  void _submitReport() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Report has been submitted successfully!'),
-          backgroundColor: Colors.black,
-          duration: Duration(seconds: 2),
-        ),
-      );
+      try {
+        String? imageUrl;
 
-      _locationController.clear();
-      _descriptionController.clear();
-      _selectedImage = null;
+        if (_selectedImage != null) {
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('transportation_disruptions/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-      Future.delayed(const Duration(seconds: 1), () {
+          final uploadTask = await storageRef.putFile(_selectedImage!);
+          imageUrl = await uploadTask.ref.getDownloadURL();
+        }
+
+        final reportData = {
+          'location': _locationController.text,
+          'description': _descriptionController.text,
+          'severity': _severity ?? 'Unspecified',
+          'image_url': imageUrl,
+          'timestamp': FieldValue.serverTimestamp(),
+        };
+
+        await FirebaseFirestore.instance.collection('transportation_disruptions').add(reportData);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Transportation report submitted successfully!')),
+        );
+
+        _locationController.clear();
+        _descriptionController.clear();
+        setState(() {
+          _selectedImage = null;
+          _severity = null;
+        });
+
         if (mounted) Navigator.pop(context);
-      });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -222,33 +272,54 @@ class OtherIssuesForm extends StatefulWidget {
 
 class _OtherIssuesFormState extends State<OtherIssuesForm> {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _locationController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   File? _selectedImage;
 
   Future<void> _pickImage() async {
-    final pickedFile =
-        await ImagePicker().pickImage(source: ImageSource.gallery);
+    final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
       setState(() => _selectedImage = File(pickedFile.path));
     }
   }
 
-  void _submitReport() {
+  void _submitReport() async {
     if (_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Report has been submitted successfully!'),
-          backgroundColor: Colors.black,
-          duration: Duration(seconds: 2),
-        ),
-      );
+      try {
+        String? imageUrl;
 
-      _descriptionController.clear();
-      _selectedImage = null;
+        if (_selectedImage != null) {
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('report_images/${DateTime.now().millisecondsSinceEpoch}.jpg');
 
-      Future.delayed(const Duration(seconds: 1), () {
+          final uploadTask = await storageRef.putFile(_selectedImage!);
+          imageUrl = await uploadTask.ref.getDownloadURL();
+        }
+
+        final reportData = {
+          'location': _locationController.text,
+          'description': _descriptionController.text,
+          'image_url': imageUrl,
+          'timestamp': FieldValue.serverTimestamp(),
+        };
+
+        await FirebaseFirestore.instance.collection('reports').add(reportData);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Report submitted successfully!'), backgroundColor: Colors.green),
+        );
+
+        _locationController.clear();
+        _descriptionController.clear();
+        setState(() => _selectedImage = null);
+
         if (mounted) Navigator.pop(context);
-      });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
+        );
+      }
     }
   }
 
@@ -257,6 +328,7 @@ class _OtherIssuesFormState extends State<OtherIssuesForm> {
     return ReportFormTemplate(
       formKey: _formKey,
       controllers: {
+        'Location': _locationController,
         'Description': _descriptionController,
       },
       selectedImage: _selectedImage,
@@ -300,14 +372,17 @@ class ReportFormTemplate extends StatelessWidget {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                // Dropdown for Road Blockages severity
                 if (onDropdownChanged != null)
                   DropdownButtonFormField<String>(
                     value: dropdownValue,
                     hint: const Text('Select Severity'),
                     onChanged: onDropdownChanged,
-                    items: ['Low', 'Medium', 'High']
-                        .map<DropdownMenuItem<String>>((String value) {
+                    items: [
+                      'Minor',
+                      'Medium',
+                      'Major',
+                      'Critical',
+                    ].map<DropdownMenuItem<String>>((String value) {
                       return DropdownMenuItem<String>(
                         value: value,
                         child: Text(value),
@@ -317,14 +392,10 @@ class ReportFormTemplate extends StatelessWidget {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 15),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                     ),
                   ),
-
                 if (onDropdownChanged != null) const SizedBox(height: 20),
-
-                // Text Fields
                 ...controllers.entries.map((entry) {
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 15),
@@ -335,20 +406,14 @@ class ReportFormTemplate extends StatelessWidget {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 15, vertical: 15),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '${entry.key} is required';
-                        }
-                        return null;
-                      },
+                      validator: (value) => (value == null || value.isEmpty)
+                          ? '${entry.key} is required'
+                          : null,
                     ),
                   );
-                }),
-
-                // Image Upload Button
+                }).toList(),
                 ElevatedButton(
                   onPressed: onImagePick,
                   style: ElevatedButton.styleFrom(
@@ -358,38 +423,23 @@ class ReportFormTemplate extends StatelessWidget {
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Upload Image',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  child: const Text('Upload Image', style: TextStyle(fontSize: 18, color: Colors.white)),
                 ),
-
                 if (selectedImage != null) ...[
                   const SizedBox(height: 10),
-                  Image.file(
-                    selectedImage!,
-                    height: 150,
-                    width: 150,
-                    fit: BoxFit.cover,
-                  ),
+                  Image.file(selectedImage!, height: 150, width: 150, fit: BoxFit.cover),
                 ],
-
                 const SizedBox(height: 20),
-
-                // Submit Button
                 ElevatedButton(
                   onPressed: onSubmit,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xFF1976D2),
-                    minimumSize: const Size(double.infinity, 55), // Increased size
+                    minimumSize: const Size(double.infinity, 55),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
                   ),
-                  child: const Text(
-                    'Submit',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
-                  ),
+                  child: const Text('Submit', style: TextStyle(fontSize: 22, color: Colors.white)),
                 ),
               ],
             ),
