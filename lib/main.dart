@@ -7,10 +7,19 @@ import 'package:k/onpressedsos.dart';
 import 'package:k/precautions1.dart';
 import 'package:k/report.dart';
 import 'package:k/shelters.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // Pass the API key to the AndroidManifest dynamically
+  const MethodChannel(
+    'flutter/config',
+  ).invokeMethod('setApiKey', dotenv.env['API_KEY']);
+
   runApp(const MyApp());
 }
 
@@ -74,16 +83,21 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PhoneAuthPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const PhoneAuthPage(),
+                  ),
                 );
               },
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: const BoxDecoration(
-                  shape: BoxShape.circle ,
+                  shape: BoxShape.circle,
                   color: Color.fromARGB(59, 248, 248, 244),
                 ),
-                child: const Icon(Icons.person, color: Color.fromARGB(255, 246, 245, 245)),
+                child: const Icon(
+                  Icons.person,
+                  color: Color.fromARGB(255, 246, 245, 245),
+                ),
               ),
             ),
           ),
@@ -186,9 +200,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     childAspectRatio: 2.3,
                     children: [
                       _buildButton('Report', Icons.report, const Report()),
-                      _buildButton('Alerts', Icons.notification_important, const Alerts()),
+                      _buildButton(
+                        'Alerts',
+                        Icons.notification_important,
+                        const Alerts(),
+                      ),
                       _buildButton('Shelters', Icons.map, const Shelters()),
-                      _buildButton('Precaution', Icons.warning, const Precautions1()),
+                      _buildButton(
+                        'Precaution',
+                        Icons.warning,
+                        const Precautions1(),
+                      ),
                     ],
                   ),
                 ),
