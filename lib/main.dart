@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:k/alerts.dart';
 import 'package:k/firebase_options.dart';
+import 'package:k/loginpage.dart';
 import 'package:k/onpressedsos.dart';
 import 'package:k/precautions1.dart';
 import 'package:k/report.dart';
@@ -58,7 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: const Color.fromARGB(255, 254, 230, 228),
       appBar: AppBar(
         title: const Text(
-          'Hazardous Management App',
+          'DEBBA DEBBA',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 20,
@@ -66,6 +67,27 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PhoneAuthPage()),
+                );
+              },
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle ,
+                  color: Color.fromARGB(59, 248, 248, 244),
+                ),
+                child: const Icon(Icons.person, color: Color.fromARGB(255, 246, 245, 245)),
+              ),
+            ),
+          ),
+        ],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -134,7 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-
           Positioned(
             top: 400,
             left: 0,
@@ -165,17 +186,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     childAspectRatio: 2.3,
                     children: [
                       _buildButton('Report', Icons.report, const Report()),
-                      _buildButton(
-                        'Alerts',
-                        Icons.notification_important,
-                        const Alerts(),
-                      ),
+                      _buildButton('Alerts', Icons.notification_important, const Alerts()),
                       _buildButton('Shelters', Icons.map, const Shelters()),
-                      _buildButton(
-                        'Precaution',
-                        Icons.warning,
-                        const Precautions1(),
-                      ),
+                      _buildButton('Precaution', Icons.warning, const Precautions1()),
                     ],
                   ),
                 ),
