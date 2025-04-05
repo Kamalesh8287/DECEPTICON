@@ -57,7 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 254, 230, 228),
-      appBar: AppBar(
+      appBar: AppBar( 
         title: const Text(
           'DEBBA DEBBA',
           style: TextStyle(
@@ -101,7 +101,7 @@ class _HomeScreenState extends State<HomeScreen> {
       body: Stack(
         children: [
           Positioned(
-            top: 60,
+            top: 100,
             left: 15,
             right: 15,
             child: Center(
@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Positioned(
-            top: 400,
+            top: 500,
             left: 0,
             right: 0,
             child: Container(
