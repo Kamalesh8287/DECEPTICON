@@ -10,10 +10,10 @@
         android:label="ResQlink"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <!-- Load the API key securely -->
+        <!-- Ensure the API key is correctly placed here -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="${MAPS_API_KEY}" />
+            android:value="MY API KEY" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
