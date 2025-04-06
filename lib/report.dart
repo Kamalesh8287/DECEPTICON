@@ -12,8 +12,6 @@ class Report extends StatefulWidget {
 }
 
 class _ReportState extends State<Report> {
-  String? _selectedReport;
-
   void _navigateToReportPage(String reportType) {
     Navigator.push(
       context,
@@ -37,7 +35,7 @@ class _ReportState extends State<Report> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'REPORT HERE',
+              '"REPORT HERE"',
               style: TextStyle(
                 fontSize: 39,
                 fontWeight: FontWeight.w900,
@@ -45,34 +43,41 @@ class _ReportState extends State<Report> {
                 letterSpacing: 1.2,
               ),
             ),
-            const SizedBox(height: 30),
-            DropdownButtonFormField<String>(
-              value: _selectedReport,
-              hint: const Text('What would you like to report?'),
-              onChanged: (String? newValue) {
-                if (newValue != null) {
-                  _navigateToReportPage(newValue);
-                }
-              },
-              items: [
-                'Missing Report',
-                'Transportation disruptions',
-                'Others',
-              ].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
+            const SizedBox(height: 40),
+            ElevatedButton(
+              onPressed: () => _navigateToReportPage('Missing Report'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1976D2),
+                minimumSize: const Size(double.infinity, 60),
+                shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 15,
+              ),
+              child: const Text('Missing Report', style: TextStyle(fontSize: 20, color: Colors.white)),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _navigateToReportPage('Transportation disruptions'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1976D2),
+                minimumSize: const Size(double.infinity, 60),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
+              child: const Text('Transportation disruptions', style: TextStyle(fontSize: 20, color: Colors.white)),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => _navigateToReportPage('Others'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF1976D2),
+                minimumSize: const Size(double.infinity, 60),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: const Text('Other Issues', style: TextStyle(fontSize: 20, color: Colors.white)),
             ),
           ],
         ),

@@ -7,9 +7,13 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:label="k"
+        android:label="ResQlink"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+        <!-- Ensure the API key is correctly placed here -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAfAsnIR9lCmUUsT94rDgZ_-ujYz9OJibE" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -26,8 +30,6 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
-            <meta-data android:name="com.google.android.geo.API_KEY"
-                android:value="${API_KEY}" />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

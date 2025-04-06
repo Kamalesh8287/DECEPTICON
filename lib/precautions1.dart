@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:k/precautions2.dart';
+import 'precautions2.dart';
 
 void main() {
   runApp(const MaterialApp(

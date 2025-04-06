@@ -1,12 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:k/alerts.dart';
-import 'package:k/firebase_options.dart';
-import 'package:k/loginpage.dart';
-import 'package:k/onpressedsos.dart';
-import 'package:k/precautions1.dart';
-import 'package:k/report.dart';
-import 'package:k/shelters.dart';
+import 'alerts.dart';
+import 'firebase_options.dart';
+import 'loginpage.dart';
+import 'onpressedsos.dart';
+import 'precautions1.dart';
+import 'report.dart';
+import 'shelters.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -57,37 +57,45 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 254, 230, 228),
-      appBar: AppBar( 
+      appBar: AppBar(
         title: const Text(
-          'DEBBA DEBBA',
+          'ResQlink',
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: 30,
             color: Colors.white,
           ),
         ),
         centerTitle: true,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
+            padding: const EdgeInsets.only(right: 15.0),
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const PhoneAuthPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const PhoneAuthPage(),
+                  ),
                 );
               },
               child: Container(
-                padding: const EdgeInsets.all(8),
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle ,
-                  color: Color.fromARGB(59, 248, 248, 244),
+                width: 45,
+                height: 45,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color.fromARGB(255, 255, 254, 254),
                 ),
-                child: const Icon(Icons.person, color: Color.fromARGB(255, 246, 245, 245)),
+                child: const Icon(
+                  Icons.account_circle,
+                  size: 45,
+                  color: Color.fromRGBO(225, 35, 35, 1),
+                ),
               ),
             ),
           ),
         ],
+
         flexibleSpace: Container(
           decoration: const BoxDecoration(
             gradient: LinearGradient(
@@ -144,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 30),
                   const Text(
-                    'In case of Emergency...\nHold this button',
+                    'Press and Hold to Instantly Send Help Alert!',
                     style: TextStyle(
                       color: Color(0xFFD32F2F),
                       fontSize: 22,
@@ -157,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Positioned(
-            top: 500,
+            top: 450,
             left: 0,
             right: 0,
             child: Container(
@@ -186,9 +194,17 @@ class _HomeScreenState extends State<HomeScreen> {
                     childAspectRatio: 2.3,
                     children: [
                       _buildButton('Report', Icons.report, const Report()),
-                      _buildButton('Alerts', Icons.notification_important, const Alerts()),
-                      _buildButton('Shelters', Icons.map, const Shelters()),
-                      _buildButton('Precaution', Icons.warning, const Precautions1()),
+                      _buildButton(
+                        'Alerts',
+                        Icons.notification_important,
+                        const Alerts(),
+                      ),
+                      _buildButton('Shelters', Icons.map, Shelters()),
+                      _buildButton(
+                        'Precaution',
+                        Icons.warning,
+                        const Precautions1(),
+                      ),
                     ],
                   ),
                 ),
